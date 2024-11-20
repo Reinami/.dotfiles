@@ -77,7 +77,6 @@ setup_bash() {
     local alias_vim_line="alias oldvim='vim'"
     local alias_nvim_line="alias vim='nvim'"
 
-    # Debugging output
     echo "git_prompt_line: $git_prompt_line"
     echo "git_source_line: $git_source_line"
     echo "alias_vim_line: $alias_vim_line"
@@ -319,6 +318,8 @@ print_notifications() {
     echo 
     print_magenta "All"
     print_yellow "Now that everything is setup, you probably should just restart your shell"
+
+    echo
 }
 
 init() {
