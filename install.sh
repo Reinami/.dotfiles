@@ -231,7 +231,8 @@ print_notifications() {
         echo
         print_red "  ./install.sh --setup-git"
     else
-        print_yellow "A Git SSH was setup, run these commands in order"
+        print_yellow "A Git SSH key was setup, unfortunately this can't be scripted because reasons: " 
+        print_yellow "Run these commands in order"
         print_red '   eval "$(ssh-agent -s)"'
         print_red "   ssh-add \"$HOME/.ssh/id_rsa_$name\""
         echo
