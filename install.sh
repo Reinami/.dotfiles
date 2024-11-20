@@ -88,15 +88,6 @@ setup_git() {
         exit 1
     fi
 
-    eval "$(ssh-agent -s)"
-    ssh-add "$HOME/.ssh/id_rsa_$name"
-    if [ $? -eq 0 ]; then
-        echo "SSH Key added to agent."
-    else
-        echo "Failed to add SSH key to agent"
-        exit 1
-    fi
-    
     git config --global user.name "$name"
     git config --global user.email "$email"
 
@@ -240,11 +231,18 @@ print_notifications() {
         echo
         print_red "  ./install.sh --setup-git"
     else
-        print_yellow "A Git SSH was setup, make sure to add this to your sshkeys on git"
+        print_yellow "A Git SSH was setup, run these commands in order"
+        print_red '   eval "$(ssh-agent -s)"'
+        print_red "   ssh-add \"$HOME/.ssh/id_rsa_$name\""
+        echo
+        print_yellow "Add this SSH key to git: "
         echo
         ssh_key_paste=$(cat $GIT_SSH_KEY)
         print_red "$ssh_key_paste"
     fi
+
+    print_magenta "All"
+    print_yellow "Now that everything is setup, you probably should just restart your shell"
 }
 
 init() {
