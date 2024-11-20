@@ -312,6 +312,11 @@ print_notifications() {
         print_red "$ssh_key_paste"
     fi
 
+    echo
+    print_magenta "nvim"
+    print_yellow "The first time you run nvim it will take a second to install all the packages"
+
+    echo 
     print_magenta "All"
     print_yellow "Now that everything is setup, you probably should just restart your shell"
 }
