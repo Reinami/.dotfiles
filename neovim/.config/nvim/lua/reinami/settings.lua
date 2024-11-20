@@ -51,3 +51,10 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
     pattern = "*",
 })
+
+vim.api.nvim_create_autocmd("TextChangedI", {
+    pattern = "*",
+    callback = function()
+        vim.cmd([[%s/\r//g]])
+    end,
+})
