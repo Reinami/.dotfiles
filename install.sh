@@ -1,3 +1,4 @@
+DOTFILE_TARGETS=("neovim" "git")
 NOTIFICATIONS=false
 GIT_SETUP=false
 GIT_SSH_KEY=""
@@ -22,9 +23,57 @@ setup() {
     sleep 2
     setup_packages "$@"
 
+    print_yellow "Setting up bash"
+    sleep 2
+    setup_bash
+
+    print_yellow "Setting up dotfiles"
+    sleep 2
+    setup_dotfiles
+
     print_notifications
 
     print_cyan "Done"
+}
+
+setup_dotfiles() {
+    local dotfiles_dir="$HOME/.dotfiles"
+
+    if [[ ! -d "$dotfiles_dir" ]]; then
+        echo "Error: this is impossible, yay"
+        exit 1
+    fi
+
+    for target in "${DOTFILE_TARGETS[@]}"; do
+        if [[ -d "$dotfiles_dir/$target" ]]; then
+            echo "Stowing $target..."
+            stow --dir="$dotfiles_dir" --target="$HOME" "$target"
+        else
+            echo "Warning: $dotfiles_dir/$target does not exist. Skipping."
+        fi
+    done
+}
+
+setup_bash() {
+    local bashrc="$HOME/.bashrc"
+    local git_prompt_line="PROMPT_COMMAND='PS1_CMD1=\$(__git_ps1 \" (%s)\")'; PS1='[\\[\\e[32m\\]\\u\\[\\e[0m\\]@\\[\\e[95m\\]\\h\\[\\e[0m\\] \\[\\e[96m\\]\\w\\[\\e[0m\\]]\\[\\e[90m\\]\${PS1_CMD1}\\[\\e[0m\\] \\[\\e[91m\\]λ\\[\\e[0m\\] '"
+    local git_source_line="source ~/.git-prompt.sh"
+
+    # Append PROMPT_COMMAND if not already in .bashrc
+    if ! grep -Fxq "$git_prompt_line" "$bashrc"; then
+        echo "Appending PROMPT_COMMAND to .bashrc"
+        echo "$git_prompt_line" >> "$bashrc"
+    else
+        echo "PROMPT_COMMAND is already present in .bashrc"
+    fi
+
+    # Append source for .git-prompt.sh if not already in .bashrc
+    if ! grep -Fxq "$git_source_line" "$bashrc"; then
+        echo "Appending source command for .git-prompt.sh to .bashrc"
+        echo "$git_source_line" >> "$bashrc"
+    else
+        echo "Source command for .git-prompt.sh is already present in .bashrc"
+    fi    
 }
 
 setup_packages() {
@@ -112,6 +161,7 @@ install_packages() {
     nix-env -iA nixpkgs.jq
     nix-env -iA nixpkgs.bat
     nix-env -iA nixpkgs.stow
+    nix-env -iA nixpkgs.go
 }
 
 setup_nix() {
