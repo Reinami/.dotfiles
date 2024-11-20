@@ -46,15 +46,17 @@ vim.g.clipboard = {
 }
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-    callback = function()
-        vim.cmd([[%s/\r//g]])
-    end,
     pattern = "*",
+    callback = function()
+        -- Use pcall to safely execute the substitution
+        pcall(vim.cmd, [[%s/\r//g]])
+    end,
 })
 
 vim.api.nvim_create_autocmd("TextChangedI", {
     pattern = "*",
     callback = function()
-        vim.cmd([[%s/\r//g]])
+        -- Safe execution with pcall to suppress errors
+        pcall(vim.cmd, [[%s/\r//g]])
     end,
 })
