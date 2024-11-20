@@ -1,7 +1,9 @@
 DOTFILE_TARGETS=("neovim" "git")
 NOTIFICATIONS=false
+BASH_RC="$HOME/.bashrc"
 GIT_SETUP=false
 GIT_SSH_KEY=""
+
 
 setup() {
     print_cyan "Starting dev environment setup"
@@ -70,25 +72,15 @@ setup_dotfiles() {
 }
 
 setup_bash() {
-    local bashrc="$HOME/.bashrc"
     local git_prompt_line="PROMPT_COMMAND='PS1_CMD1=\$(__git_ps1 \" (%s)\")'; PS1='[\\[\\e[32m\\]\\u\\[\\e[0m\\]@\\[\\e[95m\\]\\h\\[\\e[0m\\] \\[\\e[96m\\]\\w\\[\\e[0m\\]]\\[\\e[90m\\]\${PS1_CMD1}\\[\\e[0m\\] \\[\\e[91m\\]λ\\[\\e[0m\\] '"
     local git_source_line="source ~/.git-prompt.sh"
-
-    # Append PROMPT_COMMAND if not already in .bashrc
-    if ! grep -Fxq "$git_prompt_line" "$bashrc"; then
-        echo "Appending PROMPT_COMMAND to .bashrc"
-        echo "$git_prompt_line" >> "$bashrc"
-    else
-        echo "PROMPT_COMMAND is already present in .bashrc"
-    fi
-
-    # Append source for .git-prompt.sh if not already in .bashrc
-    if ! grep -Fxq "$git_source_line" "$bashrc"; then
-        echo "Appending source command for .git-prompt.sh to .bashrc"
-        echo "$git_source_line" >> "$bashrc"
-    else
-        echo "Source command for .git-prompt.sh is already present in .bashrc"
-    fi    
+    local alias_vim_line="alias oldvim='vim'"
+    local alias_nvim_line="alias vim='nvim'"
+    
+    append_to_bashrc git_prompt_line
+    append_to_bashrc git_source_line
+    append_to_bashrc alias_vim_line
+    append_to_bashrc alias_nvim_line
 }
 
 setup_packages() {
@@ -255,6 +247,16 @@ check_wsl() {
 }
 
 # utility functions
+
+append_to_bashrc() {
+    local line="$1"
+    if ! grep -Fxq "$line" "$BASH_RC"; then
+        echo "Appending: $line to $BASH_RC"
+        echo "$line" >> "$BASH_RC"
+    else
+        echo "$line is already present in $BASH_RC"
+    fi
+}
 
 print_yellow() {
     echo -e "\033[0;33m$1\033[0m"
