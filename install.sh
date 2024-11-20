@@ -76,11 +76,17 @@ setup_bash() {
     local git_source_line="source ~/.git-prompt.sh"
     local alias_vim_line="alias oldvim='vim'"
     local alias_nvim_line="alias vim='nvim'"
-    
-    append_to_bashrc git_prompt_line
-    append_to_bashrc git_source_line
-    append_to_bashrc alias_vim_line
-    append_to_bashrc alias_nvim_line
+
+    # Debugging output
+    echo "git_prompt_line: $git_prompt_line"
+    echo "git_source_line: $git_source_line"
+    echo "alias_vim_line: $alias_vim_line"
+    echo "alias_nvim_line: $alias_nvim_line"
+
+    append_to_bashrc "$git_prompt_line"
+    append_to_bashrc "$git_source_line"
+    append_to_bashrc "$alias_vim_line"
+    append_to_bashrc "$alias_nvim_line"
 }
 
 setup_packages() {
