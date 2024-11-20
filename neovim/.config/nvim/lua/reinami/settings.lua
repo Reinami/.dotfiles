@@ -30,6 +30,8 @@ vim.opt.updatetime = 50
 
 vim.opt.colorcolumn = "80"
 
+-- clipboard shenanigans for WSL
+
 vim.g.clipboard = {
     name = "WslClipboard",
     copy = {
@@ -42,3 +44,10 @@ vim.g.clipboard = {
     },
     cache_enabled = 0
 }
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = function()
+        vim.cmd([[%s/\r//g]])
+    end,
+    pattern = "*",
+})
