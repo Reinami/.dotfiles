@@ -100,6 +100,13 @@ setup_git() {
     git config --global user.name "$name"
     git config --global user.email "$email"
 
+    # Add ssh-agent startup block to ~/.bashrc if it doesn't exist
+    ssh_agent_block="# Start ssh-agent if not already running\nif ! pgrep -u \"\$USER\" ssh-agent > /dev/null; then\n    eval \"\$(ssh-agent -s)\"\nfi"
+
+    if ! grep -Fxq "# Start ssh-agent if not already running" "$HOME/.bashrc"; then
+        echo -e "\n$ssh_agent_block" >> "$HOME/.bashrc"
+    fi
+
     echo "SSH key setup complete"
     echo "Name: $name"
     echo "Email: $email"
