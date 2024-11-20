@@ -27,6 +27,10 @@ setup() {
     sleep 2
     setup_bash
 
+    print_yellow "Setting up nvm"
+    sleep 2
+    setup_nvm
+
     print_yellow "Setting up dotfiles"
     sleep 2
     setup_dotfiles
@@ -34,6 +38,17 @@ setup() {
     print_notifications
 
     print_cyan "Done"
+}
+
+setup_nvm() {
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+    nvm install node
+    nvm use node
 }
 
 setup_dotfiles() {
