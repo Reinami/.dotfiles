@@ -6,9 +6,6 @@ setup() {
     print_cyan "Starting dev environment setup"
     sleep 2
     
-    print_yellow "Updating OS"
-    sudo apt-get update
- 
     print_yellow "Dealing with WSL shenanigans"
     sleep 2 
     handle_wsl
