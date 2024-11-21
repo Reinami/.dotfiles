@@ -6,4 +6,6 @@ Simply load up any OS command prompt (preferably WSL using ubuntu for now, anyth
 curl -L https://github.com/Reinami/.dotfiles/archive/refs/heads/master.tar.gz | tar xz && mv .dotfiles-master .dotfiles && cd .dotfiles && ./install.sh
 ```
 
+You'll need to setup the fonts in WSL if you are using that in the _fonts folder. That is done through WSL unfortunately.
+
 Follow all prompts on screen and you will be all set
