@@ -14,6 +14,7 @@ local function on_tree_attach(bufnr)
 
     api.config.mappings.default_on_attach(bufnr)
 
+    vim.keymap.set("n", "<CR>", api.node.open.edit, { noremap = true, silent = true, buffer = bufnr })
     vim.keymap.set("n", "%", api.fs.create, { noremap = true, silent = true, buffer = bufnr })
     vim.keymap.set("n", "d", api.fs.remove, { noremap = true, silent = true, buffer = bufnr })
     vim.keymap.set("n", "r", api.fs.rename, { noremap = true, silent = true, buffer = bufnr })
