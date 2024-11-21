@@ -27,10 +27,19 @@ return {
                 filters = {
                     dotfiles = true,
                 },
+                on_attach = function(bufnr)
+                    local api = require("nvim-tree.api")
+
+                    vim.keymap.set("n", "%", api.fs.create, { noremap = true, silent = true, buffer = bufnr })
+                    vim.keymap.set("n", "D", api.fs.remove, { noremap = true, silent = true, buffer = bufnr })
+                    vim.keymap.set("n", "d", api.fs.mkdir, { noremap = true, silent = true, buffer = bufnr })
+                    vim.keymap.set("n", "R", api.fs.rename, { noremap = true, silent = true, buffer = bufnr })
             })
 
-            vim.keymap.set("n", "<leader>e", api.tree.toggle, { noremap = true, silent = true, desc = "Toggle NvimTree" })
-            vim.keymap.set("n", "<C-e>", toggle_tree_focus, {noremap = true, silent = true, desc = "Focus NvimTree"})
+            local api = require("nvim-tree.api")
+
+            vim.keymap.set("n", "<C-t>", api.tree.toggle, { noremap = true, silent = true, desc = "Toggle NvimTree" })
+            vim.keymap.set("n", "<leader>e", toggle_tree_focus, {noremap = true, silent = true, desc = "Focus NvimTree"})
         end,
     },
 }
