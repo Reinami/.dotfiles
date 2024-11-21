@@ -218,9 +218,9 @@ fix_wsl() {
         echo -e "\n[interop]\nappendWindowsPath = false" | sudo tee -a "$wsl_conf" > /dev/null
     fi
     
-    if ! grep -Fq "$path_line" ~/.bashrc; then
-        echo "$path_line" >> ~/.bashrc
-    fi
+    # if ! grep -Fq "$path_line" ~/.bashrc; then
+    #     echo "$path_line" >> ~/.bashrc
+    # fi
 
     echo "Fixed WSL"
 }
