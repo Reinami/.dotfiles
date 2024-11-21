@@ -1,8 +1,5 @@
 vim.g.mapleader = " "
 
--- explores the file path
-vim.keymap.set("n", "<leader>e", vim.cmd.Ex)
-
 -- sets file as executable
 vim.keymap.set("n", "<leader>exec", "<cmd>!chmod +x %<CR>", { silent = true })
 
