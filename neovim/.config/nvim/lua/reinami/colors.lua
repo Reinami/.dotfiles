@@ -1,5 +1,13 @@
 local function SetTheme(opts)
-    local themeName = opts.args
+    local themeName
+    if type(opts) == "string" then
+        themeName = opts -- Direct string passed
+    elseif type(opts) == "table" and opts.args then
+        themeName = opts.args -- Called as a user command
+    else
+        error("Invalid argument passed to SetTheme")
+    end
+
     vim.cmd.colorscheme(themeName)
 
     -- Customize highlights for transparency
