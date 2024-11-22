@@ -1,5 +1,7 @@
 # Portable Development Enviornment
 
+This is my own personal development environment meant to be spun up on any machine anywhere. You can use it if you want i guess, but it's mean't for me so i won't make any changes to any of it outside of what i want.
+
 Simply load up any OS command prompt (preferably WSL using ubuntu for now, anything else is untested) and run this command:
 
 ```
