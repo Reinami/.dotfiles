@@ -3,6 +3,7 @@ NOTIFICATIONS=false
 BASH_RC="$HOME/.bashrc"
 GIT_SETUP=false
 GIT_SSH_KEY=""
+WSL_DETECTED=false
 
 setup() {
     print_cyan "Starting dev environment setup"
@@ -92,12 +93,16 @@ setup_bash() {
 
 setup_packages() {
     local include_git_flag=false
+    locale include_docker_flag=false
 
     # Parse arguments for setup_packages
     for arg in "$@"; do
         case $arg in
             --include-git)
                 include_git_flag=true
+                ;;
+            --include-docker)
+                include_docker_flag=true
                 ;;
         esac
     done
@@ -106,6 +111,10 @@ setup_packages() {
 
     if $include_git_flag; then
         setup_git
+    fi
+
+    if $include_docker_flag; then
+        setup_docker
     fi
 }
 
@@ -166,6 +175,14 @@ setup_git() {
     GIT_SETUP=true
     GIT_SSH_KEY="$HOME/.ssh/id_rsa_$name.pub"
 }
+
+setup_docker() {
+    sudo addgroup --system docker
+    sudo adduser $USER docker
+    newgrp docker
+    sudo chown root:docker /var/run/docker.sock
+    sudo chmod g+w /var/run/docker.sock
+}   
 
 install_packages() {
     nix-env -iA nixpkgs.neovim
@@ -246,6 +263,8 @@ check_wsl() {
         is_wsl=true
     fi
 
+    WSL_DETECTED=is_wsl
+
     if $is_wsl; then
         return 0
     else
@@ -295,7 +314,32 @@ print_notifications() {
         print_green "NOTIFICATIONS"
         echo "========================"
     fi
+
+    if $WSL_DETECTED; then
+        echo
+        print_magenta "WSL2"
+        
+        echo
+        print_green "Fonts"
+        echo
+        print_yellow "To setup fonts correctly, make sure to unzip and install the fonts in _fonts, and tell WSL to use the font in the settings tab of the cmd window"
+
+        echo
+        print_green "Docker"
+        echo
+        print_yellow "Docker in WSL runs using Docker Desktop, make sure to install docker desktop, and inside docker desktop settins do the following:"
+        print_yellow "1. Make sure 'Use the WSL 2 based engine' is checked in the general tab"
+        print_yellow "2. Make sure 'Enable integration with my default WSL distro' is checked under Resources > WSL Integration"
+        print_yellow "3. Make sure you use the slider to enable the it with 'additional distros'"
+        print_yellow "4. Ensure docker is running by running 'docker ps' in the terminal"
+        print_yellow "5. If you get 'permission denied, rerun the script with the --setup-docker flag to fix it"
+        
+        echo
+        print_red "  ./install.sh --setup-docker"
+    fi
+
     # Check if Git was set up successfully
+    echo
     print_magenta "Git"
     if ! $GIT_SETUP; then
         print_yellow "Git was not set up due to not having the flag to do so. To set it up, rerun the script with the '--setup-git' flag:"
@@ -326,11 +370,15 @@ print_notifications() {
 
 init() {
     local setup_git_flag=false
+    local setup_docker_flag=false
 
     for arg in "$@"; do
         case $arg in
             --setup-git)
                 setup_git_flag=true
+                ;;
+            --setup-docker)
+                setup_docker_flag=true
                 ;;
             *)
                 echo "Unknown argument: $arg"
@@ -343,6 +391,13 @@ init() {
     if $setup_git_flag; then
         print_cyan "Setting up git"
         setup_git
+        print_notifications
+        print_cyan "Done"
+    elif $setup_docker_flag; then
+        # Set the flag here so we don't print out git shenanigans when setting up docker
+        GIT_SETUP=true
+        print_cyan "Setting up docker"
+        setup_docker
         print_notifications
         print_cyan "Done"
     else
