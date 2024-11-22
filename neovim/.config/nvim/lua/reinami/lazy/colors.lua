@@ -12,7 +12,6 @@ return {
     config = function()
         require("kanagawa").setup({
             transparent = true, -- Enable transparent background
-            theme = "wave", -- Choose "wave", "dragon", or "lotus" themes
             overrides = function(colors)
                 return {
                     -- Ensure Normal and NormalFloat retain transparency
