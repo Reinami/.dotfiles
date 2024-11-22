@@ -1,7 +1,6 @@
 DOTFILE_TARGETS=("neovim" "git")
 NOTIFICATIONS=false
 BASH_RC="$HOME/.bashrc"
-SKIP_NOTIFICATIONS=false
 GIT_SETUP=false
 GIT_SSH_KEY=""
 WSL_DETECTED=false
@@ -180,7 +179,6 @@ setup_git() {
 setup_docker() {
     sudo addgroup --system docker
     sudo adduser $USER docker
-    newgrp docker
     
     echo "Changing docker.sock permissions"
     sudo chown root:docker /var/run/docker.sock
@@ -308,7 +306,7 @@ print_red() {
 }
 
 print_notifications() {
-    if ! $NOTIFICATIONS; then
+    if $NOTIFICATIONS; then
         echo "========================"
         print_green "NOTIFICATIONS"
         echo "========================"
@@ -388,16 +386,18 @@ init() {
     done
 
     if $setup_git_flag; then
-        SKIP_NOTIFICATIONS=true
         print_cyan "Setting up git"
         setup_git
+
+        NOTIFICATIONS=false
         print_notifications
         print_cyan "Done"
     elif $setup_docker_flag; then
         # Set the flag here so we don't print out git shenanigans when setting up docker
-        SKIP_NOTIFICATIONS=true
         print_cyan "Setting up docker"
         setup_docker
+
+        NOTIFICATIONS=false
         print_notifications
         print_cyan "Done"
     else
