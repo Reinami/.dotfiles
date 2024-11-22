@@ -6,6 +6,8 @@ GIT_SSH_KEY=""
 WSL_DETECTED=false
 
 setup() {
+    NOTIFICATIONS=true
+
     print_cyan "Starting dev environment setup"
     sleep 2
     
