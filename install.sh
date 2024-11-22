@@ -93,7 +93,7 @@ setup_bash() {
 
 setup_packages() {
     local include_git_flag=false
-    locale include_docker_flag=false
+    local include_docker_flag=false
 
     # Parse arguments for setup_packages
     for arg in "$@"; do
