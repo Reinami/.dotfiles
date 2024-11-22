@@ -1,12 +1,3 @@
-function SetThemeColor(color)
-    color = color or "kanagawa"
-    vim.cmd.colorscheme(color)
-
-    -- Customize highlights for transparency
-    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-end
-
 return {
     "rebelot/kanagawa.nvim",
     config = function()
@@ -20,11 +11,5 @@ return {
                 }
             end,
         })
-
-        -- Apply the colorscheme
-        vim.cmd("colorscheme kanagawa")
-        
-        -- Apply additional customizations
-        SetThemeColor()
     end,
 }
