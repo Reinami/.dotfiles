@@ -1,6 +1,7 @@
 DOTFILE_TARGETS=("neovim" "git")
 NOTIFICATIONS=false
 BASH_RC="$HOME/.bashrc"
+SKIP_NOTIFICATIONS=false
 GIT_SETUP=false
 GIT_SSH_KEY=""
 WSL_DETECTED=false
@@ -180,6 +181,8 @@ setup_docker() {
     sudo addgroup --system docker
     sudo adduser $USER docker
     newgrp docker
+    
+    echo "Changing docker.sock permissions"
     sudo chown root:docker /var/run/docker.sock
     sudo chmod g+w /var/run/docker.sock
 }   
@@ -305,67 +308,63 @@ print_red() {
 }
 
 print_notifications() {
-    if ! $GIT_SETUP; then
-        NOTIFICATIONS=true
-    fi    
-
-    if $NOTIFICATIONS; then
+    if ! $NOTIFICATIONS; then
         echo "========================"
         print_green "NOTIFICATIONS"
         echo "========================"
+
+        if $WSL_DETECTED; then
+            echo
+            print_magenta "WSL2"
+            
+            echo
+            print_green "Fonts"
+            echo
+            print_yellow "To setup fonts correctly, make sure to unzip and install the fonts in _fonts, and tell WSL to use the font in the settings tab of the cmd window"
+
+            echo
+            print_green "Docker"
+            echo
+            print_yellow "Docker in WSL runs using Docker Desktop, make sure to install docker desktop, and inside docker desktop settins do the following:"
+            print_yellow "1. Make sure 'Use the WSL 2 based engine' is checked in the general tab"
+            print_yellow "2. Make sure 'Enable integration with my default WSL distro' is checked under Resources > WSL Integration"
+            print_yellow "3. Make sure you use the slider to enable the it with 'additional distros'"
+            print_yellow "4. Ensure docker is running by running 'docker ps' in the terminal"
+            print_yellow "5. If you get 'permission denied, rerun the script with the --setup-docker flag to fix it"
+            
+            echo
+            print_red "  ./install.sh --setup-docker"
+        fi
+
+        # Check if Git was set up successfully
+        echo
+        print_magenta "Git"
+        if ! $GIT_SETUP; then
+            print_yellow "Git was not set up due to not having the flag to do so. To set it up, rerun the script with the '--setup-git' flag:"
+            echo
+            print_red "  ./install.sh --setup-git"
+        else
+            print_yellow "A Git SSH key was setup, unfortunately this can't be scripted because reasons: " 
+            print_yellow "Run these commands in order"
+            print_red '   eval "$(ssh-agent -s)"'
+            print_red "   ssh-add \"$HOME/.ssh/id_rsa_$name\""
+            echo
+            print_yellow "Add this SSH key to git: "
+            echo
+            ssh_key_paste=$(cat $GIT_SSH_KEY)
+            print_red "$ssh_key_paste"
+        fi
+
+        echo
+        print_magenta "nvim"
+        print_yellow "The first time you run nvim it will take a second to install all the packages"
+
+        echo 
+        print_magenta "All"
+        print_yellow "Now that everything is setup, you probably should just restart your shell"
+
+        echo
     fi
-
-    if $WSL_DETECTED; then
-        echo
-        print_magenta "WSL2"
-        
-        echo
-        print_green "Fonts"
-        echo
-        print_yellow "To setup fonts correctly, make sure to unzip and install the fonts in _fonts, and tell WSL to use the font in the settings tab of the cmd window"
-
-        echo
-        print_green "Docker"
-        echo
-        print_yellow "Docker in WSL runs using Docker Desktop, make sure to install docker desktop, and inside docker desktop settins do the following:"
-        print_yellow "1. Make sure 'Use the WSL 2 based engine' is checked in the general tab"
-        print_yellow "2. Make sure 'Enable integration with my default WSL distro' is checked under Resources > WSL Integration"
-        print_yellow "3. Make sure you use the slider to enable the it with 'additional distros'"
-        print_yellow "4. Ensure docker is running by running 'docker ps' in the terminal"
-        print_yellow "5. If you get 'permission denied, rerun the script with the --setup-docker flag to fix it"
-        
-        echo
-        print_red "  ./install.sh --setup-docker"
-    fi
-
-    # Check if Git was set up successfully
-    echo
-    print_magenta "Git"
-    if ! $GIT_SETUP; then
-        print_yellow "Git was not set up due to not having the flag to do so. To set it up, rerun the script with the '--setup-git' flag:"
-        echo
-        print_red "  ./install.sh --setup-git"
-    else
-        print_yellow "A Git SSH key was setup, unfortunately this can't be scripted because reasons: " 
-        print_yellow "Run these commands in order"
-        print_red '   eval "$(ssh-agent -s)"'
-        print_red "   ssh-add \"$HOME/.ssh/id_rsa_$name\""
-        echo
-        print_yellow "Add this SSH key to git: "
-        echo
-        ssh_key_paste=$(cat $GIT_SSH_KEY)
-        print_red "$ssh_key_paste"
-    fi
-
-    echo
-    print_magenta "nvim"
-    print_yellow "The first time you run nvim it will take a second to install all the packages"
-
-    echo 
-    print_magenta "All"
-    print_yellow "Now that everything is setup, you probably should just restart your shell"
-
-    echo
 }
 
 init() {
@@ -389,13 +388,14 @@ init() {
     done
 
     if $setup_git_flag; then
+        SKIP_NOTIFICATIONS=true
         print_cyan "Setting up git"
         setup_git
         print_notifications
         print_cyan "Done"
     elif $setup_docker_flag; then
         # Set the flag here so we don't print out git shenanigans when setting up docker
-        GIT_SETUP=true
+        SKIP_NOTIFICATIONS=true
         print_cyan "Setting up docker"
         setup_docker
         print_notifications
