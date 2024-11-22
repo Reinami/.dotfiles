@@ -6,8 +6,6 @@ GIT_SSH_KEY=""
 WSL_DETECTED=false
 
 setup() {
-    NOTIFICATIONS=true
-
     print_cyan "Starting dev environment setup"
     sleep 2
     
@@ -403,6 +401,7 @@ init() {
         print_notifications
         print_cyan "Done"
     else
+        NOTIFICATIONS=true
         setup "$@"
     fi
 
