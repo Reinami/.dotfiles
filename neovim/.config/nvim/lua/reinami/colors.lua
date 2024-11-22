@@ -1,5 +1,5 @@
-function SetTheme(opts)
-    local themeName = ops.args
+local function SetTheme(opts)
+    local themeName = opts.args
     vim.cmd.colorscheme(themeName)
 
     -- Customize highlights for transparency
@@ -12,3 +12,7 @@ vim.api.nvim_create_user_command(
     SetTheme,
     { nargs = 1 }
 )
+
+return {
+    SetTheme = SetTheme
+}
