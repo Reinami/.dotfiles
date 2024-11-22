@@ -3,8 +3,8 @@ return {
     config = function()
         require("vscode_modern").setup({
             cursorline = true,
-            transparent_background = true
-            nvim_tree_darker = true
+            transparent_background = true,
+            nvim_tree_darker = true,
         })
     end,
 }

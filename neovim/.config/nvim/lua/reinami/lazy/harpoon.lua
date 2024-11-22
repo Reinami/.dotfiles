@@ -20,5 +20,6 @@ return {
             vim.keymap.set("n", tostring(i), function()
                 ui.nav_file(i)
             end, { buffer = true, desc = "Navigates to file " ..i})
+        end
     end,
 }
