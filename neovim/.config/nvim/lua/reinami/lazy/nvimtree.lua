@@ -38,7 +38,7 @@ return {
                     group_empty = true,
                 },
                 filters = {
-                    dotfiles = true,
+                    dotfiles = false,
                 },
                 on_attach = on_tree_attach,
             })
