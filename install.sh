@@ -263,7 +263,7 @@ check_wsl() {
         is_wsl=true
     fi
 
-    WSL_DETECTED=is_wsl
+    WSL_DETECTED=$is_wsl
 
     if $is_wsl; then
         return 0
