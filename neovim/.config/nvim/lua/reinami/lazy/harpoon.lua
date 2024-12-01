@@ -15,11 +15,5 @@ return {
 
         vim.keymap.set("n", "<A-left>", function() harpoon:list():prev() end)
         vim.keymap.set("n", "<A-Right>", function() harpoon:list():next() end)
-
-        for i = 1, 9 do
-            vim.keymap.set("n", tostring(i), function()
-                ui.nav_file(i)
-            end, { buffer = true, desc = "Navigates to file " ..i})
-        end
     end,
 }

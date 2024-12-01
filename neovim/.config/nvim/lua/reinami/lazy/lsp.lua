@@ -44,6 +44,32 @@ return {
             -- Lua-specific setup
             require("lspconfig").lua_ls.setup(lsp_zero.nvim_lua_ls())
 
+            -- Golang-specific setup
+            require("lspconfig").gopls.setup({
+                on_attach = function(client, bufnr)
+                    -- Enable formatting on save
+                    if client.server_capabilities.documentFormattingProvider then
+                        -- Format on save
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            group = vim.api.nvim_create_augroup("GoFormatOnSave", { clear = true }),
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format({ async = false })
+                            end,
+                        })
+            
+                        -- Format on leaving insert mode
+                        vim.api.nvim_create_autocmd("InsertLeave", {
+                            group = vim.api.nvim_create_augroup("GoFormatOnInsertLeave", { clear = true }),
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format({ async = false })
+                            end,
+                        })
+                    end
+                end,
+            })
+
             -- Configure CMP
             local cmp = require("cmp")
             cmp.setup({
